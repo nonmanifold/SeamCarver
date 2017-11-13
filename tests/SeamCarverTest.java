@@ -3,6 +3,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class SeamCarverTest {
@@ -41,5 +42,20 @@ public class SeamCarverTest {
 
         assertEquals(Math.sqrt(52024), carver.energy(1, 2), 0.01);
         assertEquals(Math.sqrt(52225), carver.energy(1, 1), 0.01);
+    }
+
+    @Test
+    public void findVerticalSeam_6x5() {
+        Picture picture = new Picture("6x5.png");
+        SeamCarver carver = new SeamCarver(picture);
+
+        assertArrayEquals(new int[]{3, 4, 3, 2, 2}, carver.findVerticalSeam());
+    }
+    @Test
+    public void findHorizontalSeam_6x5() {
+        Picture picture = new Picture("6x5.png");
+        SeamCarver carver = new SeamCarver(picture);
+
+        assertArrayEquals(new int[]{2, 2, 1, 2, 1, 2}, carver.findHorizontalSeam());
     }
 }
