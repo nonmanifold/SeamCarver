@@ -1,33 +1,62 @@
 import edu.princeton.cs.algs4.Picture;
 
+import java.awt.*;
+
 public class SeamCarver {
 
-    private Picture picture;
+    private Color[][] picture;
+    private double[][] energy;
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
-        this.picture = new Picture(picture);//create defensive copy
+        if (picture == null) {
+            throw new IllegalArgumentException();
+        }
+        this.picture = new Color[picture.height()][picture.width()];//create defensive copy
+        this.energy = new double[picture.height()][picture.width()];//create defensive copy
+        for (int row = 0; row < picture.height(); row++) {
+            this.picture[row] = new Color[picture.width()];
+
+            for (int col = 0; col < picture.width(); col++) {
+                this.picture[row][col] = picture.get(col, row);
+            }
+        }
+        for (int row = 0; row < picture.height(); row++) {
+            this.energy[row] = new double[picture.width()];
+
+            for (int col = 0; col < picture.width(); col++) {
+                this.energy[row][col] = energy(col, row);
+            }
+        }
+
+
     }
 
     // current picture
     public Picture picture() {
-        return this.picture;
+        Picture out = new Picture(width(), height());
+        for (int row = 0; row < height(); row++) {
+            for (int col = 0; col < width(); col++) {
+                out.set(col, row, this.picture[row][col]);
+            }
+        }
+        return out;
     }
 
     // width of current picture
     public int width() {
-        return picture.width();
+        return picture[0].length;
     }
 
     // height of current picture
     public int height() {
-        return picture.height();
+        return picture.length;
     }
 
     // energy of pixel at column x and row y
     public double energy(int x, int y) {
         checkRange(x, y);
-        if (x == 0 || x == picture.width() - 1 || y == 0 || y == picture.height() - 1) {
+        if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1) {
             return 1000;
         }
 
@@ -37,31 +66,31 @@ public class SeamCarver {
     }
 
     private int By(int x, int y) {
-        return picture.get(x, y + 1).getBlue() - picture.get(x, y - 1).getBlue();
+        return picture[y + 1][x].getBlue() - picture[y - 1][x].getBlue();
     }
 
     private int Gy(int x, int y) {
-        return picture.get(x, y + 1).getGreen() - picture.get(x, y - 1).getGreen();
+        return picture[y + 1][x].getGreen() - picture[y - 1][x].getGreen();
     }
 
     private int Ry(int x, int y) {
-        return picture.get(x, y + 1).getRed() - picture.get(x, y - 1).getRed();
+        return picture[y + 1][x].getRed() - picture[y - 1][x].getRed();
     }
 
     private int Bx(int x, int y) {
-        return picture.get(x + 1, y).getBlue() - picture.get(x - 1, y).getBlue();
+        return picture[y][x + 1].getBlue() - picture[y][x - 1].getBlue();
     }
 
     private int Gx(int x, int y) {
-        return picture.get(x + 1, y).getGreen() - picture.get(x - 1, y).getGreen();
+        return picture[y][x + 1].getGreen() - picture[y][x - 1].getGreen();
     }
 
     private int Rx(int x, int y) {
-        return picture.get(x + 1, y).getRed() - picture.get(x - 1, y).getRed();
+        return picture[y][x + 1].getRed() - picture[y][x - 1].getRed();
     }
 
     private void checkRange(int x, int y) {
-        if (x < 0 || x > picture.width() || y < 0 || y > picture.height()) {
+        if (x < 0 || x > width() || y < 0 || y > height()) {
             throw new IllegalArgumentException();
         }
     }
@@ -91,7 +120,7 @@ public class SeamCarver {
     }
 
     private void validateImage() {
-        if (picture.height() <= 1 || picture.width() <= 1) {
+        if (height() <= 1 || width() <= 1) {
             throw new IllegalArgumentException();
         }
     }
