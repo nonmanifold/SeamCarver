@@ -1,4 +1,5 @@
 import edu.princeton.cs.algs4.Picture;
+
 import java.awt.Color;
 
 public class SeamCarver {
@@ -24,7 +25,7 @@ public class SeamCarver {
             this.energy[row] = new double[picture.width()];
 
             for (int col = 0; col < picture.width(); col++) {
-                this.energy[row][col] = energy(col, row);
+                this.energy[row][col] = energyCalculate(col, row);
             }
         }
 
@@ -54,6 +55,11 @@ public class SeamCarver {
 
     // energy of pixel at column x and row y
     public double energy(int x, int y) {
+        return energy[y][x];
+    }
+
+    // energy of pixel at column x and row y
+    private double energyCalculate(int x, int y) {
         checkRange(x, y);
         if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1) {
             return 1000;
@@ -101,6 +107,17 @@ public class SeamCarver {
 
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
+        // run DFS to find topological order:
+        // https://www.coursera.org/learn/algorithms-part2/lecture/RAMNS/topological-sort  (6:43)
+
+        // then consider vertices in topological order:
+        // https://www.coursera.org/learn/algorithms-part2/lecture/6rxSt/edge-weighted-dags  (1:50)
+        // note: edges are three neighbour pixels under the current one
+        // relax all edges pointing from a vertex saving distTo(aka total energy)
+        // store 'edgeTo'- x-coordinate of previous row that took us there
+
+        // find minimal total energy in the last row and follow back through using 'edgeTo'
+
         return null;
     }
 
@@ -108,7 +125,6 @@ public class SeamCarver {
     public void removeHorizontalSeam(int[] seam) {
         validateImage();
         validateSeam(seam);
-
     }
 
 
@@ -116,6 +132,9 @@ public class SeamCarver {
     public void removeVerticalSeam(int[] seam) {
         validateImage();
         validateSeam(seam);
+        // remove seam in picture by shifting row members using System.arraycopy()
+        // remove seam in energy
+        // update energies for all neighbours of the removed seam
     }
 
     private void validateImage() {
