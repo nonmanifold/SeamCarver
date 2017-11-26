@@ -55,12 +55,13 @@ public class SeamCarver {
 
     // energy of pixel at column x and row y
     public double energy(int x, int y) {
+        checkRange(x, y);
         return energy[y][x];
     }
 
     // energy of pixel at column x and row y
     private double energyCalculate(int x, int y) {
-        checkRange(x, y);
+        // checkRange(x, y);
         if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1) {
             return 1000;
         }
@@ -113,12 +114,12 @@ public class SeamCarver {
         double[][] tenergy = new double[width()][height()];
         for (int row = 0; row < height(); row++) {
             for (int col = 0; col < width(); col++) {
-                tpicture[col][row]=picture[row][col];
-                tenergy[col][row]=energy[row][col];
+                tpicture[col][row] = picture[row][col];
+                tenergy[col][row] = energy[row][col];
             }
         }
-        picture=tpicture;
-        energy=tenergy;
+        picture = tpicture;
+        energy = tenergy;
     }
 
     // sequence of indices for vertical seam
@@ -182,6 +183,9 @@ public class SeamCarver {
     public void removeHorizontalSeam(int[] seam) {
         validateImage();
         validateSeam(seam);
+        transpose();
+        removeVerticalSeam(seam);
+        transpose();
     }
 
 
@@ -189,9 +193,30 @@ public class SeamCarver {
     public void removeVerticalSeam(int[] seam) {
         validateImage();
         validateSeam(seam);
-        // remove seam in picture by shifting row members using System.arraycopy()
-        // remove seam in energy
+        int newWidth = width() - 1;
+        for (int row = 0; row < height(); row++) {
+            // remove seam in energy
+
+            int intactPos = seam[row];
+            int intactLen = seam[row] + 1;
+
+            double[] newEnergy = new double[newWidth];
+            System.arraycopy(energy[row], 0, newEnergy, 0, intactPos);
+            System.arraycopy(energy[row], intactLen, newEnergy, intactPos, newWidth - intactPos);
+            energy[row] = newEnergy;
+
+            // remove seam in picture by shifting row members using System.arraycopy()
+            Color[] newPicture = new Color[newWidth];
+            System.arraycopy(picture[row], 0, newPicture, 0, intactPos);
+            System.arraycopy(picture[row], intactLen, newPicture, intactPos, newWidth - intactPos);
+            picture[row] = newPicture;
+        }
+
         // update energies for all neighbours of the removed seam
+        for (int row = 0; row < height(); row++) {
+            energy[row][seam[row] - 1] = energyCalculate(seam[row] - 1, row);
+            energy[row][seam[row]] = energyCalculate(seam[row], row);
+        }
     }
 
     private void validateImage() {
