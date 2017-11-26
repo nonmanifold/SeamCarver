@@ -109,7 +109,34 @@ public class SeamCarver {
     public int[] findVerticalSeam() {
         // run DFS to find topological order:
         // https://www.coursera.org/learn/algorithms-part2/lecture/RAMNS/topological-sort  (6:43)
+        double[][] distTo = new double[height()][width()];
+        int[][] edgeTo = new int[height()][width()];
 
+        for (int row = 0; row < height(); row++) {
+            for (int col = 0; col < width(); col++) {
+                distTo[row][col] = Double.POSITIVE_INFINITY;
+                edgeTo[row][col] = -1;
+            }
+        }
+        for (int col = 0; col < width(); col++) {
+            distTo[0][col] = energy(col, 0);// first row
+        }
+        for (int row = 0; row < height() - 1; row++) {
+            for (int col = 0; col < width(); col++) {
+                //distTo[row][col] = energy(col, row);
+                //double energy = energy(col, row);
+                double dist = distTo[row][col];
+                double minEnergy = Double.POSITIVE_INFINITY;
+                for (int v = Math.max(col - 1, 0); v <= Math.min(col + 1, width() - 1); v++) {
+                    // relax edge:
+                    double currDist = dist + energy(v, row + 1);
+                    if (currDist < distTo[row + 1][v]) {
+                        distTo[row + 1][v] = currDist;
+                        edgeTo[row + 1][v] = col;// edge we came from
+                    }
+                }
+            }
+        }
         // then consider vertices in topological order:
         // https://www.coursera.org/learn/algorithms-part2/lecture/6rxSt/edge-weighted-dags  (1:50)
         // note: edges are three neighbour pixels under the current one
@@ -117,8 +144,22 @@ public class SeamCarver {
         // store 'edgeTo'- x-coordinate of previous row that took us there
 
         // find minimal total energy in the last row and follow back through using 'edgeTo'
-
-        return null;
+        double[] lastRow = distTo[height() - 1];
+        int minIdx = -1;
+        double min = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < lastRow.length; i++) {
+            if (lastRow[i] < min) {
+                min = lastRow[i];
+                minIdx = i;
+            }
+        }
+        int[] out = new int[height()];
+        out[height() - 1] = minIdx;
+        for (int i = height() - 1; i > 0; i--) {
+            out[i - 1] = edgeTo[i][minIdx];
+            minIdx = out[i - 1];
+        }
+        return out;
     }
 
     // remove horizontal seam from current picture

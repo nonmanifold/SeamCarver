@@ -17,7 +17,7 @@ public class SeamCarverTest {
     }
 
     @Test
-    public void CalculateEnergy_boreders() {
+    public void CalculateEnergy_borders() {
         Picture picture = new Picture("3x4.png");
         SeamCarver carver = new SeamCarver(picture);
 
@@ -49,7 +49,7 @@ public class SeamCarverTest {
         Picture picture = new Picture("6x5.png");
         SeamCarver carver = new SeamCarver(picture);
 
-        assertArrayEquals(new int[]{3, 4, 3, 2, 2}, carver.findVerticalSeam());
+        assertArrayEquals(new int[]{3, 4, 3, 2, 1}, carver.findVerticalSeam());
     }
     @Test
     public void findHorizontalSeam_6x5() {
