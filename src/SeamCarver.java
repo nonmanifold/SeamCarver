@@ -181,8 +181,6 @@ public class SeamCarver {
 
     // remove horizontal seam from current picture
     public void removeHorizontalSeam(int[] seam) {
-        validateImage();
-        validateSeam(seam);
         transpose();
         removeVerticalSeam(seam);
         transpose();
@@ -191,7 +189,9 @@ public class SeamCarver {
 
     // remove vertical seam from current picture
     public void removeVerticalSeam(int[] seam) {
-        validateImage();
+        if (height() < 1 || width() <= 1) {
+            throw new IllegalArgumentException();
+        }
         validateSeam(seam);
         int newWidth = width() - 1;
         for (int row = 0; row < height(); row++) {
@@ -220,12 +220,6 @@ public class SeamCarver {
             if (seam[row] >= 0 && seam[row] < width()) {
                 energy[row][seam[row]] = energyCalculate(seam[row], row);
             }
-        }
-    }
-
-    private void validateImage() {
-        if (height() <= 1 || width() <= 1) {
-            throw new IllegalArgumentException();
         }
     }
 

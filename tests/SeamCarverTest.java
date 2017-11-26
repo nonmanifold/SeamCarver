@@ -75,6 +75,17 @@ public class SeamCarverTest {
     }
 
     @Test
+    public void findAndRemoveVerticalSeam_8x1() {
+        Picture picture = new Picture("8x1.png");
+        SeamCarver carver = new SeamCarver(picture);
+        int[] seam = carver.findVerticalSeam();
+        carver.removeVerticalSeam(seam);
+
+        assertEquals(7, carver.width());
+        assertEquals(1, carver.height());
+    }
+
+    @Test
     public void findHorizontalSeam_6x5() {
         Picture picture = new Picture("6x5.png");
         SeamCarver carver = new SeamCarver(picture);
