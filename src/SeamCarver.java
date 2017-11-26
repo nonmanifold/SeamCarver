@@ -214,8 +214,12 @@ public class SeamCarver {
 
         // update energies for all neighbours of the removed seam
         for (int row = 0; row < height(); row++) {
-            energy[row][seam[row] - 1] = energyCalculate(seam[row] - 1, row);
-            energy[row][seam[row]] = energyCalculate(seam[row], row);
+            if (seam[row] - 1 >= 0 && seam[row] - 1 < width()) {
+                energy[row][seam[row] - 1] = energyCalculate(seam[row] - 1, row);
+            }
+            if (seam[row] >= 0 && seam[row] < width()) {
+                energy[row][seam[row]] = energyCalculate(seam[row], row);
+            }
         }
     }
 
