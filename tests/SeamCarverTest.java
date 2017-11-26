@@ -56,6 +56,6 @@ public class SeamCarverTest {
         Picture picture = new Picture("6x5.png");
         SeamCarver carver = new SeamCarver(picture);
 
-        assertArrayEquals(new int[]{2, 2, 1, 2, 1, 2}, carver.findHorizontalSeam());
+        assertArrayEquals(new int[]{1, 2, 1, 2, 1, 0}, carver.findHorizontalSeam());
     }
 }

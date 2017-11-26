@@ -102,7 +102,23 @@ public class SeamCarver {
 
     // sequence of indices for horizontal seam
     public int[] findHorizontalSeam() {
-        return null;
+        transpose();
+        int[] seam = findVerticalSeam();
+        transpose();
+        return seam;
+    }
+
+    private void transpose() {
+        Color[][] tpicture = new Color[width()][height()];
+        double[][] tenergy = new double[width()][height()];
+        for (int row = 0; row < height(); row++) {
+            for (int col = 0; col < width(); col++) {
+                tpicture[col][row]=picture[row][col];
+                tenergy[col][row]=energy[row][col];
+            }
+        }
+        picture=tpicture;
+        energy=tenergy;
     }
 
     // sequence of indices for vertical seam
